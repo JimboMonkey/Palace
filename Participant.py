@@ -19,8 +19,27 @@ class Participant(object):
 		self.Hand.sort(key=lambda Card: Card.Value)
 		# Check for invasion potential
 
+	def RemoveCard(self, CardsToRemove):
+		#for Card in CardsToRemove:
+		#	print str(Card.Name) + " of " + str(Card.Suit) + " has an index of " + str(Card.ID)
+		#	self.Hand.remove(Card)
+		print "removing " + str(CardsToRemove)
+		for i in range(0,len(CardsToRemove)):
+			for Card in self.Hand:
+				for Index in CardsToRemove:
+					if Card.ID == Index:
+						self.CardsToPlay.append(Card)
+						self.Hand.remove(Card)
+						print "delete " + str(Card.Name) + " of " + str(Card.Suit)
+						#del self.Hand[i]
+        
+
+
 	def PlayCards(self):
-		return self.CardsToPlay
+		TempCardsList = self.CardsToPlay
+		self.CardsToPlay = []
+		return TempCardsList
+
 
 	def HandSize(self):
 		return len(self.Hand)
