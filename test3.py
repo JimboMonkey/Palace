@@ -22,6 +22,7 @@ class Example(QtGui.QWidget):
 		self.PlayersHand = []
 		self.CardHand = []
 		self.SelectedList = []
+		self.SelectedID = []
 		posXPlayer = 0
 		self.checkbox = {}
 		grid = QtGui.QGridLayout()
@@ -44,10 +45,12 @@ class Example(QtGui.QWidget):
 				#print str(element)
 				posYPlayer += 60
 				self.CardHand.append(0)
+				#self.PlayersHand.append(QExtendedLabel.ExtendedQLabel(element))
 				self.PlayersHand.append(QExtendedLabel.ExtendedQLabel(self))
 				self.connect(self.PlayersHand[element], QtCore.SIGNAL('clicked()'), partial(self.myDraw, element))	
 				self.PlayersHand[element].setGeometry(posXPlayer, posYPlayer, 191, 250)
 				self.PlayersHand[element].setVisible(False)
+				self.PlayersHand[element].SetID(element)
 				self.checkbox[element] = QtGui.QCheckBox(str(element))
 				grid.addWidget(self.checkbox[element], j, i)
 
@@ -107,11 +110,15 @@ class Example(QtGui.QWidget):
 		self.show()  
 
 	def myDraw(self, element):
+		print "*****" + str(self.PlayersHand[element].ID)
+		cardID = self.PlayersHand[element].ID
+##### From here all () element were swapped for cardID #####
 		if(self.SelectedList.count(element) > 0):
 			# Already selected so deselect
 			#print str(element) + " deselected"
 			# Remove from selection list
 			self.SelectedList.remove(element)
+			self.SelectedID.remove(cardID)
 			# Uncheck checkbox
 			self.checkbox[element].setChecked(False)
 			self.UpdateHand()
@@ -120,6 +127,7 @@ class Example(QtGui.QWidget):
 			#print str(element) + " selected"
 			# Add from selection list
 			self.SelectedList.append(element)
+			self.SelectedID.append(cardID)
 			# Check checkbox
 			self.checkbox[element].setChecked(True)
 			###############################################################
@@ -129,10 +137,12 @@ class Example(QtGui.QWidget):
 			if res > 1:
 				for i in xrange(0, 52):
 					del self.SelectedList[:]
+					del self.SelectedID[:]
 					self.checkbox[i].setChecked(False)
 				# Tick the newly selected checkbox and selection in list
 				self.checkbox[element].setChecked(True)
 				self.SelectedList.append(element)
+				self.SelectedID.append(cardID)
 				##############################################################
 			self.UpdateHand()
 		#print self.SelectedList
@@ -153,18 +163,29 @@ class Example(QtGui.QWidget):
 		card_num = 0
 		stored_val = 0
 		card_count = 0
+
+		#self.MyTable.Players[0].ListHand()
+
+		for i in xrange(0, 52):
+			self.PlayersHand[i].setVisible(False)
+
 		#del self.SelectedList[:]
 #		print "Cards In players hand:"
 		for card in self.MyTable.Players[0].Hand:
 			self.myImage = QtGui.QPixmap("Cards/" + card.Name + card.Suit + ".png")
-			#print card.Value
+			#print "Loading card with ID of " + str(card.ID)
 			if(card.Value != stored_val):
 				card_num = (card_count * 4)
 				card_count += 1
 			else:
 				card_num += 1
+
+			#print "Reading card value " + str(card.Value)
+			#print "card count = " + str(card_count)
+			#print "card num = " + str(card_num)
 			
 			stored_val = card.Value
+			print self.SelectedList
 			if self.SelectedList.count(card_num) > 0:
 				MyRect = self.myImage.rect()
 				self.qp = QtGui.QPainter()
@@ -174,6 +195,7 @@ class Example(QtGui.QWidget):
 				#self.SelectedList.append(card_num)
 			self.PlayersHand[card_num].setPixmap(self.myImage)
 			self.PlayersHand[card_num].setVisible(True)
+			self.PlayersHand[card_num].SetID(card.ID)
 			if(card.Value not in (2,8,10)):
 				if(self.MyDealer.PlayCardValue == 7):
 					if card.Value > self.MyDealer.PlayCardValue:
@@ -190,15 +212,21 @@ class Example(QtGui.QWidget):
 	def buttonClicked(self):
 		print "\nPlaying the:"
 		self.play_list = []
-		for i in xrange(0, 52):
-			if self.SelectedList.count(i) > 0:
+#		for i in xrange(0, 52):
+#			if self.SelectedList.count(i) > 0:
 				#print i
-				print "   " + self.CardHand[i].Name + " of " + self.CardHand[i].Suit
-		for index in self.SelectedList:
-			self.play_list.append(self.CardHand[index])
-		self.MyDealer.AddToPile(self.play_list)
+#				print "   " + self.CardHand[i].Name + " of " + self.CardHand[i].Suit
+#		for index in self.SelectedList:
+#			self.play_list.append(self.CardHand[index])
+		#self.MyTable.Players[0].RemoveCard(self.play_list)
+		self.MyTable.Players[0].RemoveCard(self.SelectedID)
+		self.MyDealer.AddToPile(self.MyTable.Players[0].PlayCards())
+#		self.MyDealer.AddToPile(self.play_list)
 		self.MyDealer.ListPile()
+		self.SelectedList = []
+		self.SelectedID = []
 		self.UpdateHand()
+		self.PlayCardsButton.setVisible(False)
 
 
 	
