@@ -37,14 +37,13 @@ class Dealer(object):
 
 	def AddToPile(self, CardsToAdd):
 		self.Pile.extend(CardsToAdd)
-		self.NewList = self.Pile[-4:]
-		#self.new_range = [i.Value for i in self.NewList]
-		self.new_range = [i.Value for i in self.Pile[(len(self.Pile)-4):len(self.Pile)]]
+		self.TopFourCards = [i.Value for i in self.Pile[-4:]]
 		# Check if 10 or invasion played
-		if(self.new_range.count(10)):
+		print "Card values = " + str(self.TopFourCards)
+		if(self.TopFourCards.count(10)):
 			print "\nBurn!"
 			self.Pile = []
-		elif (len(self.Pile[-4:]) == 4) and (len(set(self.new_range)) == 1):
+		elif (len(self.Pile[-4:]) == 4) and (len(set(self.TopFourCards)) == 1):
 			print "\nInvasion!"
 			self.Pile = []
 
