@@ -28,12 +28,6 @@ class Example(QtGui.QWidget):
 		grid = QtGui.QGridLayout()
 
 		j = 0
-		pos = [(0, 0), (0, 1), (0, 2), (0, 3),
-                (1, 0), (1, 1), (1, 2), (1, 3),
-                (2, 0), (2, 1), (2, 2), (2, 3),
-                (3, 0), (3, 1), (3, 2), (3, 3 ),
-                (4, 0), (4, 1), (4, 2), (4, 3)]
-
 
 		self.myImage = QtGui.QPixmap("Cards/AceDiamonds.png")
 
@@ -110,7 +104,6 @@ class Example(QtGui.QWidget):
 		self.show()  
 
 	def myDraw(self, element):
-		print "*****" + str(self.PlayersHand[element].ID)
 		cardID = self.PlayersHand[element].ID
 ##### From here all () element were swapped for cardID #####
 		if(self.SelectedList.count(element) > 0):
@@ -185,7 +178,7 @@ class Example(QtGui.QWidget):
 			#print "card num = " + str(card_num)
 			
 			stored_val = card.Value
-			print self.SelectedList
+			#print self.SelectedList
 			if self.SelectedList.count(card_num) > 0:
 				MyRect = self.myImage.rect()
 				self.qp = QtGui.QPainter()
@@ -219,8 +212,12 @@ class Example(QtGui.QWidget):
 #		for index in self.SelectedList:
 #			self.play_list.append(self.CardHand[index])
 		#self.MyTable.Players[0].RemoveCard(self.play_list)
-		self.MyTable.Players[0].RemoveCard(self.SelectedID)
-		self.MyDealer.AddToPile(self.MyTable.Players[0].PlayCards())
+		print "Before..."
+		self.MyTable.Players[0].ListHand()
+		self.MyDealer.AddToPile(self.MyTable.Players[0].PlayCards(self.SelectedID))
+		print "After..."
+		self.MyTable.Players[0].ListHand()
+		#self.MyDealer.AddToPile(self.MyTable.Players[0].PlayCards())
 #		self.MyDealer.AddToPile(self.play_list)
 		self.MyDealer.ListPile()
 		self.SelectedList = []
