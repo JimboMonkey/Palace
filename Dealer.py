@@ -33,7 +33,10 @@ class Dealer(object):
 	    return self.Deck.pop();
 
 	def PassPile(self):
-		return self.Pile
+		PileCopy = self.Pile
+		self.Pile = []
+		self.PlayCardValue = 1
+		return PileCopy
 
 	def AddToPile(self, CardsToAdd):
 		self.Pile.extend(CardsToAdd)
@@ -76,6 +79,9 @@ class Dealer(object):
 
 			# Place the chosen card at the end of the pack
 			self.Deck[self.DeckSize - 1] = TempStore;        
+
+	def StatePile(self):
+		return self.Pile
 
 	def ListDeck(self):
 		for CardNumber in xrange(0, 52):
