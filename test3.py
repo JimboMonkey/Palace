@@ -23,16 +23,17 @@ class Example(QtGui.QWidget):
 		self.CardHand = []
 		self.SelectedList = []
 		self.SelectedID = []
+		self.Pile = []
 		posXPlayer = 0
-		self.checkbox = {}
+		#self.checkbox = {}
 		grid = QtGui.QGridLayout()
 
 		j = 0
 
-		self.myImage = QtGui.QPixmap("Cards/AceDiamonds.png")
+		self.myImage = QtGui.QPixmap("Cards/CardBack.png")
 
 		for i in xrange(0, 13):
-			posYPlayer = 0
+			posYPlayer = 400
 			posXPlayer += 45    
 			for j in xrange(0, 4):
 				element = ((i*4)+j)
@@ -45,8 +46,21 @@ class Example(QtGui.QWidget):
 				self.PlayersHand[element].setGeometry(posXPlayer, posYPlayer, 191, 250)
 				self.PlayersHand[element].setVisible(False)
 				self.PlayersHand[element].SetID(element)
-				self.checkbox[element] = QtGui.QCheckBox(str(element))
-				grid.addWidget(self.checkbox[element], j, i)
+				#self.checkbox[element] = QtGui.QCheckBox(str(element))
+				#grid.addWidget(self.checkbox[element], j, i)
+
+		for i in xrange(0, 4):
+			self.Pile.append(QExtendedLabel.ExtendedQLabel(self))
+			#self.Pile[i].setPixmap(self.myImage)
+			self.Pile[i].setVisible(False)
+			if i < 3:
+				self.Pile[i].setGeometry(20, 30+i*60, 191, 250)
+			else:
+				self.Pile[i].setGeometry(65, 30, 191, 250)
+
+		self.Deck = QExtendedLabel.ExtendedQLabel(self)
+		self.Deck.setGeometry(500, 50, 191, 250)
+		self.Deck.setPixmap(self.myImage)
 
 		vBox = QtGui.QVBoxLayout()
 		vBox.addWidget(PlayersCards)    
@@ -73,7 +87,7 @@ class Example(QtGui.QWidget):
 		self.MyDealer = Dealer()
 		#self.MyDealer.ListDeck()
 
-		for i in xrange(0, 13):
+		for i in xrange(0, 3):
 			for xPlayer in self.MyTable.Players:
 				xPlayer.TakeCard(self.MyDealer.DeckDeal())
 
@@ -98,8 +112,8 @@ class Example(QtGui.QWidget):
 		self.UpdateHand()
 
 
-		self.move(300, 200)
-		self.setGeometry(300, 300, 850, 630)
+		self.move(300, 300)
+		self.setGeometry(300, 100, 850, 900)
 		self.setWindowTitle('Shithead')
 		self.show()  
 
@@ -113,7 +127,7 @@ class Example(QtGui.QWidget):
 			self.SelectedList.remove(element)
 			self.SelectedID.remove(cardID)
 			# Uncheck checkbox
-			self.checkbox[element].setChecked(False)
+			#self.checkbox[element].setChecked(False)
 			self.UpdateHand()
 		else:
 			# Already deslected so select
@@ -122,7 +136,7 @@ class Example(QtGui.QWidget):
 			self.SelectedList.append(element)
 			self.SelectedID.append(cardID)
 			# Check checkbox
-			self.checkbox[element].setChecked(True)
+			#self.checkbox[element].setChecked(True)
 			###############################################################
 			# Check that only cards of the same value are selected
 			res = len(set([x/4 for x in self.SelectedList]))
@@ -131,9 +145,9 @@ class Example(QtGui.QWidget):
 				for i in xrange(0, 52):
 					del self.SelectedList[:]
 					del self.SelectedID[:]
-					self.checkbox[i].setChecked(False)
+					#self.checkbox[i].setChecked(False)
 				# Tick the newly selected checkbox and selection in list
-				self.checkbox[element].setChecked(True)
+				#self.checkbox[element].setChecked(True)
 				self.SelectedList.append(element)
 				self.SelectedID.append(cardID)
 				##############################################################
@@ -162,6 +176,7 @@ class Example(QtGui.QWidget):
 		for i in xrange(0, 52):
 			self.PlayersHand[i].setVisible(False)
 
+		sum = 0
 		#del self.SelectedList[:]
 #		print "Cards In players hand:"
 		for card in self.MyTable.Players[0].Hand:
@@ -200,6 +215,14 @@ class Example(QtGui.QWidget):
 						self.PlayersHand[card_num].setEnabled(False)
 					else:
 						self.PlayersHand[card_num].setEnabled(True)
+
+			sum += self.PlayersHand[card_num].isEnabled()
+
+		if sum == 0:
+			print "PICK UP!"
+			self.MyTable.Players[0].TakePile(self.MyDealer.PassPile())
+			self.UpdateHand()
+			self.UpdatePile([])
 			
 				
 	def buttonClicked(self):
@@ -222,9 +245,27 @@ class Example(QtGui.QWidget):
 		self.MyDealer.ListPile()
 		self.SelectedList = []
 		self.SelectedID = []
+		NumberCards = len(self.MyTable.Players[0].Hand)
+		if NumberCards < 3:
+			for i in range(0, (3 - NumberCards)):
+				self.MyTable.Players[0].TakeCard(self.MyDealer.DeckDeal())
 		self.UpdateHand()
 		self.PlayCardsButton.setVisible(False)
+		self.UpdatePile(self.MyDealer.StatePile())
 
+	def UpdatePile(self, PileCards):
+		i = 0
+		print "Length of " + str(len(PileCards[-4:]))
+		if len(PileCards[-4:]) == 0:
+			for i in xrange(0, 4):
+				self.Pile[i].setVisible(False)		
+		else:
+			for Card in PileCards[-4:]:
+				print str(Card.Name) + " of " + str(Card.Suit) + " has an index of " + str(Card.ID)
+				self.myImage = QtGui.QPixmap("Cards/" + Card.Name + Card.Suit + ".png")
+				self.Pile[i].setPixmap(self.myImage)
+				self.Pile[i].setVisible(True)
+				i+=1
 
 	
 				
