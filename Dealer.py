@@ -42,7 +42,6 @@ class Dealer(object):
 		self.Pile.extend(CardsToAdd)
 		self.TopFourCards = [i.Value for i in self.Pile[-4:]]
 		# Check if 10 or invasion played
-		print "Card values = " + str(self.TopFourCards)
 		if(self.TopFourCards.count(10)):
 			print "\nBurn!"
 			self.Pile = []
@@ -90,7 +89,7 @@ class Dealer(object):
 	def ListPile(self):
 		print "\n\nThe pile contains:"
 		for card in self.Pile:
-			print "   " + card.Name + " of " + card.Suit + " with a value of " + str(card.Value)
+			print "   " + card.Name + " of " + card.Suit
 		print "\n   Play card value is: " + str(self.PlayCardValue)
         
 

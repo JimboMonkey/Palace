@@ -13,6 +13,6 @@ class Player(Participant):
 	def ListHand(self):
 		print "\n" + self.Name + " is holding:"
 		for Card in self.Hand:
-			print "    " + Card.Name + " of " + Card.Suit + " with a value of " + str(Card.Value)
+			print "    " + Card.Name + " of " + Card.Suit
 	
 
