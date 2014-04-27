@@ -80,10 +80,12 @@ class Example(QtGui.QWidget):
 
 		James = Player("James")
 		Phil = ComputerPlayer("Phil")
+		Nash = ComputerPlayer("Nash")
 
 		self.MyTable = Table()
 		self.MyTable.AddPlayer(James)
 		self.MyTable.AddPlayer(Phil)
+		self.MyTable.AddPlayer(Nash)
 
 		#MyTable.ListPlayers()
 
@@ -120,6 +122,8 @@ class Example(QtGui.QWidget):
 		self.setWindowTitle('Shithead')
 		self.show()  
 
+
+
 	def myDraw(self, element):
 		cardID = self.PlayersHand[element].ID
 ##### From here all () element were swapped for cardID #####
@@ -151,7 +155,6 @@ class Example(QtGui.QWidget):
 		#print self.SelectedList
 		self.PlayCardsButton.setVisible(len(self.SelectedList))
 		
-			
 
 
 
@@ -160,6 +163,8 @@ class Example(QtGui.QWidget):
 		pen = QtGui.QPen(QtCore.Qt.red, 4, QtCore.Qt.SolidLine)
 		qp.setPen(pen)
 		qp.drawRect(QtCore.QRect(MyRect))
+
+
 
 
 	def UpdateHand(self):
@@ -219,7 +224,6 @@ class Example(QtGui.QWidget):
 			self.UpdateHand()
 			self.UpdatePile([])
 			
-				
 	def buttonClicked(self):
 		self.play_list = []
 		self.GameStatus.setText("")
@@ -236,7 +240,7 @@ class Example(QtGui.QWidget):
 		self.PlayCardsButton.setVisible(False)
 		self.UpdatePile(self.MyDealer.StatePile())
 
-		#################################
+		##################################
 		ComputersCards = self.MyTable.Players[1].DecideCard(self.MyDealer.PlayCardValue)
 		if ComputersCards == None:
 			self.MyTable.Players[1].TakePile(self.MyDealer.PassPile())
@@ -249,8 +253,28 @@ class Example(QtGui.QWidget):
 				for i in range(0, (3 - NumberCards)):
 					self.MyTable.Players[1].TakeCard(self.MyDealer.DeckDeal())
 			self.UpdatePile(self.MyDealer.StatePile())
+		# Don't update here e;se you will pick up inbetween goes!!!!
+		#self.UpdateHand()
+
+		#################################
+		ComputersCards = self.MyTable.Players[2].DecideCard(self.MyDealer.PlayCardValue)
+		if ComputersCards == None:
+			self.MyTable.Players[2].TakePile(self.MyDealer.PassPile())
+			self.UpdatePile([])
+			self.GameStatus.setText("Virtual Nash picks up!")
+		else:
+			self.MyDealer.AddToPile(ComputersCards)
+			NumberCards = len(self.MyTable.Players[2].Hand)
+			if NumberCards < 3:
+				for i in range(0, (3 - NumberCards)):
+					self.MyTable.Players[2].TakeCard(self.MyDealer.DeckDeal())
+			self.UpdatePile(self.MyDealer.StatePile())
 		self.UpdateHand()
-		##################################
+		##################################		
+
+
+				
+
 
 	def UpdatePile(self, PileCards):
 		i = 0
