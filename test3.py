@@ -8,6 +8,7 @@ from PyQt4 import QtGui, QtCore
 
 from Dealer import *
 from Player import *
+from ComputerPlayer import *
 from Table import *
 
 class Example(QtGui.QWidget):
@@ -56,9 +57,14 @@ class Example(QtGui.QWidget):
 				self.Pile[i].setGeometry(65, 30, 191, 250)
 
 		self.Deck = QExtendedLabel.ExtendedQLabel(self)
-		self.Deck.setGeometry(500, 50, 191, 250)
+		self.Deck.setGeometry(600, 50, 191, 250)
 		self.Deck.setPixmap(self.myImage)
 
+		self.GameStatus = QtGui.QLabel(self)
+		font = QtGui.QFont('Serif', 16, QtGui.QFont.Light)
+		self.GameStatus.setFont(font)
+		self.GameStatus.setGeometry(300, 100, 500, 100)
+		
 		vBox = QtGui.QVBoxLayout()
 		vBox.addWidget(PlayersCards)    
 
@@ -73,7 +79,7 @@ class Example(QtGui.QWidget):
 		self.setLayout(vBox)
 
 		James = Player("James")
-		Phil = Player("Phil")
+		Phil = ComputerPlayer("Phil")
 
 		self.MyTable = Table()
 		self.MyTable.AddPlayer(James)
@@ -88,8 +94,8 @@ class Example(QtGui.QWidget):
 			for xPlayer in self.MyTable.Players:
 				xPlayer.TakeCard(self.MyDealer.DeckDeal())
 
-	#	for xPlayer in MyTable.Players:
-#			xPlayer.ListHand()
+		for xPlayer in self.MyTable.Players:
+			xPlayer.ListHand()
 		card_num = 0
 		stored_val = 0
 		card_count = 0
@@ -208,6 +214,7 @@ class Example(QtGui.QWidget):
 
 		if sum == 0:
 			print "PICK UP!"
+			self.GameStatus.setText("James picks up!")
 			self.MyTable.Players[0].TakePile(self.MyDealer.PassPile())
 			self.UpdateHand()
 			self.UpdatePile([])
@@ -215,7 +222,7 @@ class Example(QtGui.QWidget):
 				
 	def buttonClicked(self):
 		self.play_list = []
-
+		self.GameStatus.setText("")
 		self.MyDealer.AddToPile(self.MyTable.Players[0].PlayCards(self.SelectedID))
 
 		self.MyDealer.ListPile()
@@ -228,6 +235,22 @@ class Example(QtGui.QWidget):
 		self.UpdateHand()
 		self.PlayCardsButton.setVisible(False)
 		self.UpdatePile(self.MyDealer.StatePile())
+
+		#################################
+		ComputersCards = self.MyTable.Players[1].DecideCard(self.MyDealer.PlayCardValue)
+		if ComputersCards == None:
+			self.MyTable.Players[1].TakePile(self.MyDealer.PassPile())
+			self.UpdatePile([])
+			self.GameStatus.setText("Virtual Phil picks up!")
+		else:
+			self.MyDealer.AddToPile(ComputersCards)
+			NumberCards = len(self.MyTable.Players[1].Hand)
+			if NumberCards < 3:
+				for i in range(0, (3 - NumberCards)):
+					self.MyTable.Players[1].TakeCard(self.MyDealer.DeckDeal())
+			self.UpdatePile(self.MyDealer.StatePile())
+		self.UpdateHand()
+		##################################
 
 	def UpdatePile(self, PileCards):
 		i = 0
