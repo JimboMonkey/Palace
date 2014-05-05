@@ -20,6 +20,14 @@ class Example(QtGui.QWidget):
 	def initUI(self):      
 
 		PlayersCards = 	QtGui.QGroupBox(self)
+
+		Computer1TableCards = QtGui.QGroupBox(self)
+		Computer2TableCards = QtGui.QGroupBox(self)
+		PlayerTableCards = QtGui.QGroupBox(self)
+
+		self.Comp1TableCards = []
+		self.Comp2TableCards = []
+		self.PlayerTableCards = []
 		self.PlayersHand = []
 		self.CardHand = []
 		self.SelectedList = []
@@ -60,6 +68,10 @@ class Example(QtGui.QWidget):
 		self.Deck.setGeometry(600, 50, 191, 250)
 		self.Deck.setPixmap(self.myImage)
 
+	#	self.Comp1TableCards.append(QExtendedLabel.ExtendedQLabel(self))
+	#	self.Comp1TableCards.setGeometry(50, 50, 191, 250)
+	#	self.Comp1TableCards.setPixmap(self.myImage)
+
 		self.GameStatus = QtGui.QLabel(self)
 		font = QtGui.QFont('Serif', 16, QtGui.QFont.Light)
 		self.GameStatus.setFont(font)
@@ -87,10 +99,15 @@ class Example(QtGui.QWidget):
 		self.MyTable.AddPlayer(Phil)
 		self.MyTable.AddPlayer(Nash)
 
-		#MyTable.ListPlayers()
+		self.MyTable.ListPlayers()
 
 		self.MyDealer = Dealer()
 		#self.MyDealer.ListDeck()
+		for i in xrange(0, 6):
+				for xPlayer in self.MyTable.Players:		
+					xPlayer.InitialTakeCard(self.MyDealer.DeckDeal())
+					xPlayer.ListHand()
+				
 
 		for i in xrange(0, 3):
 			for xPlayer in self.MyTable.Players:
@@ -253,7 +270,7 @@ class Example(QtGui.QWidget):
 				for i in range(0, (3 - NumberCards)):
 					self.MyTable.Players[1].TakeCard(self.MyDealer.DeckDeal())
 			self.UpdatePile(self.MyDealer.StatePile())
-		# Don't update here e;se you will pick up inbetween goes!!!!
+		# Don't update here else you will pick up inbetween goes!!!!
 		#self.UpdateHand()
 
 		#################################
