@@ -9,10 +9,10 @@ class ComputerPlayer(Participant):
 		self.Name = Name
 		self.CardsToPlay = []
 
-	def ListHand(self):
-		print "\n" + self.Name + " is holding:"
-		for Card in self.Hand:
-			print "    " + Card.Name + " of " + Card.Suit
+	#def ListHand(self):
+	#	print "\n" + self.Name + " is holding:"
+#		for Card in self.Hand:
+#			print "    " + Card.Name + " of " + Card.Suit
 		#print "    (" + str(self.HandScore()) + ")"
 		#self.DecideCard()
 
