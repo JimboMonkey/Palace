@@ -7,9 +7,28 @@ class Participant(object):
 		self.Faceups = []
 		self.CardsToPlay = []
 
+	def InitialTakeCard(self, CardToTake):
+		print "\n" + self.Name + " taking a card"
+		if len(self.Facedowns) < 3:
+			self.Facedowns.append(CardToTake)
+		else:
+			self.Faceups.append(CardToTake)
+
+
 	def TakeCard(self, CardToTake):
 		self.Hand.append(CardToTake)
 		self.SortHand()
+
+	def ListHand(self):
+		print "\n" + self.Name + " is holding in facedowns:"
+		for Card in self.Facedowns:
+			print "    " + Card.Name + " of " + Card.Suit
+		print "\n" + self.Name + " is holding in faceups:"
+		for Card in self.Faceups:
+			print "    " + Card.Name + " of " + Card.Suit
+		print "\n" + self.Name + " is holding in hand:"
+		for Card in self.Hand:
+			print "    " + Card.Name + " of " + Card.Suit
 
 	def TakePile(self, Pile):
 		self.Hand.extend(Pile)
